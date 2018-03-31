@@ -13,6 +13,16 @@
 // Задержка между измерениями в мс
 #define DELAY 2000
 
+// Функция переводящая значения аналогового пина в вольты 
+float analogToVolt(int data);
+
+// Функция, пишущая значения в серийный порт 
+void printToSerial(float volt);
+
+// Функция выводящая значение на lcd дисплей
+void printToLCD(float volt);
+
+
 void setup() {
   Serial.begin(BAUD);
 }
@@ -36,12 +46,12 @@ float analogToVolt(int data){
   }
 
 // Функция, пишущая значения в серийный порт 
-void printToSerial(){
+void printToSerial(float volt){
   
   }
 
 // Функция выводящая значение на lcd дисплей
-void printToLCD(){
+void printToLCD(float volt){
 
   }
 
