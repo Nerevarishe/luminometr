@@ -5,6 +5,7 @@
 #define BAUD 9600
 
 // Множитель для отображения значения:
+// 0 - в промежутке между 0 и 1023
 // 1 - в вольтах
 // 1000 - в миливольтах
 // 1000000 - в микровольтах
@@ -13,11 +14,8 @@
 // Задержка между измерениями в мс
 #define DELAY 2000
 
-// Функция переводящая значения аналогового пина в вольты 
+// Функция переводящая значения c аналогового пина в вольты
 float analogToVolt(int data);
-
-// Функция, пишущая значения в серийный порт 
-void printToSerial(float volt);
 
 // Функция выводящая значение на lcd дисплей
 void printToLCD(float volt);
@@ -28,26 +26,24 @@ void setup() {
 }
 
 void loop() {
-  // Писать в ком порт значения с аналогового пина
-  printToSerial();
-
-  // Выводить значения на экран
-  // printToLCD();
+  int data = analogRead(LUMINOMETR_PIN);
+  if ( MULTIPLIER == 0){
+    Serial.println(data);
+  }
+  else {
+    float volt = analogToVolt(data);
+    Serial.println(volt);
+  }
 
   // Задержка цикла в мс
   delay(DELAY);
 }
 
-// Функция переводящая значения аналогового пина в вольты 
+// Функция переводящая значения c аналогового пина в вольты
 float analogToVolt(int data){
   float volt = data * (5.0 / 1023.0);
   volt *= MULTIPLIER;
   return volt;
-  }
-
-// Функция, пишущая значения в серийный порт 
-void printToSerial(float volt){
-  
   }
 
 // Функция выводящая значение на lcd дисплей
