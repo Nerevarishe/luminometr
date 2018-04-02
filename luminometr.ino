@@ -9,10 +9,10 @@
 // 1 - в вольтах
 // 1000 - в миливольтах
 // 1000000 - в микровольтах
-#define MULTIPLIER 1
+#define MULTIPLIER 1000
 
 // Задержка между измерениями в мс
-#define DELAY 2000
+#define DELAY 10
 
 // Функция переводящая значения c аналогового пина в вольты
 float analogToVolt(int data);
@@ -23,6 +23,7 @@ void printToLCD(float volt);
 
 void setup() {
   Serial.begin(BAUD);
+  //analogReference(INTERNAL);
 }
 
 void loop() {
@@ -41,6 +42,7 @@ void loop() {
 
 // Функция переводящая значения c аналогового пина в вольты
 float analogToVolt(int data){
+  //float volt = (data * 1.1) / 1023;
   float volt = data * (5.0 / 1023.0);
   volt *= MULTIPLIER;
   return volt;
@@ -50,5 +52,3 @@ float analogToVolt(int data){
 void printToLCD(float volt){
 
   }
-
-
