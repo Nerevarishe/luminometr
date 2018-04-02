@@ -9,10 +9,13 @@
 // 1 - в вольтах
 // 1000 - в миливольтах
 // 1000000 - в микровольтах
-#define MULTIPLIER 1000
+#define MULTIPLIER 1
+
+// Выборка для вычисления среднего значения
+#define SELECTION 100
 
 // Задержка между измерениями в мс
-#define DELAY 10
+#define DELAY 2000
 
 // Функция переводящая значения c аналогового пина в вольты
 float analogToVolt(int data);
@@ -24,20 +27,32 @@ void printToLCD(float volt);
 void setup() {
   Serial.begin(BAUD);
   //analogReference(INTERNAL);
+  pinMode(12, INPUT_PULLUP);
 }
 
-void loop() {
-  int data = analogRead(LUMINOMETR_PIN);
-  if ( MULTIPLIER == 0){
-    Serial.println(data);
-  }
-  else {
-    float volt = analogToVolt(data);
-    Serial.println(volt);
-  }
+void loop() {  
+  boolean button1 = !digitalRead(12);
+  //Serial.print("Button: ");
+  //Serial.println(button1);
+  
+  // Массив в котором хранятся измерения с аналогово пина
+  int data[SELECTION];
 
-  // Задержка цикла в мс
-  delay(DELAY);
+  // Переменная хранящая сумму всех чисел в массиве data
+  int sum = 0;
+  
+  for (int i = 0; i < SELECTION; i++){
+    data[i] = analogRead(LUMINOMETR_PIN);
+    sum += data[i];
+    delay(DELAY);
+  }
+  
+  // Вывод среднеарифметического значения в серийный порт в заданных единицах
+  if(MULTIPLIER == 0){
+    Serial.println(sum / SELECTION);
+  }
+  else Serial.println(analogToVolt(sum / SELECTION));
+  
 }
 
 // Функция переводящая значения c аналогового пина в вольты
