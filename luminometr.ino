@@ -1,6 +1,9 @@
 // Пин аналогового хода к которому подсоединяется люминометр
 #define LUMINOMETR_PIN 0
 
+// Пин, к которому подключена кнопка
+#define BUTTON 12
+
 // Скорость на которой общается контроллер с ком терменалом
 #define BAUD 9600
 
@@ -14,8 +17,8 @@
 // Выборка для вычисления среднего значения
 #define SELECTION 100
 
-// Задержка между измерениями в мс
-#define DELAY 2000
+// Задержка между измерениями при добавлении данных в массив в мс
+#define DELAY 200
 
 // Функция переводящая значения c аналогового пина в вольты
 float analogToVolt(int data);
@@ -31,16 +34,13 @@ void setup() {
 }
 
 void loop() {  
-  boolean button1 = !digitalRead(12);
-  //Serial.print("Button: ");
-  //Serial.println(button1);
-  
   // Массив в котором хранятся измерения с аналогово пина
   int data[SELECTION];
 
   // Переменная хранящая сумму всех чисел в массиве data
   int sum = 0;
-  
+
+  // Цикл, записывающий значения измерений в массив и высчитывающий сумму всех его значений
   for (int i = 0; i < SELECTION; i++){
     data[i] = analogRead(LUMINOMETR_PIN);
     sum += data[i];
@@ -52,7 +52,15 @@ void loop() {
     Serial.println(sum / SELECTION);
   }
   else Serial.println(analogToVolt(sum / SELECTION));
-  
+
+  // Цикл, ожидающий нажатия кнопки для повторного измерения
+  while(true) {
+    boolean button = !digitalRead(BUTTON);
+    if(button == 1){
+      Serial.println("NEW_MEASUREMENT");
+      break;
+    }
+  }
 }
 
 // Функция переводящая значения c аналогового пина в вольты
