@@ -18,40 +18,34 @@
 #define SELECTION 100
 
 // Задержка между измерениями при добавлении данных в массив в мс
-#define DELAY 200
+#define DELAY 20
 
 // Функция переводящая значения c аналогового пина в вольты
 float analogToVolt(int data);
 
-// Функция выводящая значение на lcd дисплей
-void printToLCD(float volt);
-
-
 void setup() {
   Serial.begin(BAUD);
   //analogReference(INTERNAL);
-  pinMode(12, INPUT_PULLUP);
+  pinMode(BUTTON, INPUT_PULLUP);
 }
 
 void loop() {  
   // Массив в котором хранятся измерения с аналогово пина
-  int data[SELECTION];
-
-  // Переменная хранящая сумму всех чисел в массиве data
-  int sum = 0;
+  double data = 0;
 
   // Цикл, записывающий значения измерений в массив и высчитывающий сумму всех его значений
   for (int i = 0; i < SELECTION; i++){
-    data[i] = analogRead(LUMINOMETR_PIN);
-    sum += data[i];
+    data += analogRead(LUMINOMETR_PIN);
     delay(DELAY);
   }
+  // Находим среднее значение
+  data /= 100;
   
   // Вывод среднеарифметического значения в серийный порт в заданных единицах
   if(MULTIPLIER == 0){
-    Serial.println(sum / SELECTION);
+    Serial.println(data);
   }
-  else Serial.println(analogToVolt(sum / SELECTION));
+  else Serial.println(analogToVolt(data));
 
   // Цикл, ожидающий нажатия кнопки для повторного измерения
   while(true) {
@@ -64,14 +58,9 @@ void loop() {
 }
 
 // Функция переводящая значения c аналогового пина в вольты
-float analogToVolt(int data){
+float analogToVolt(double data){
   //float volt = (data * 1.1) / 1023;
   float volt = data * (5.0 / 1023.0);
   volt *= MULTIPLIER;
   return volt;
-  }
-
-// Функция выводящая значение на lcd дисплей
-void printToLCD(float volt){
-
   }
